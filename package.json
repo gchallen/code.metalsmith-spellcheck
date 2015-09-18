@@ -1,0 +1,34 @@
+{
+  "name": "metalsmith-spellcheck",
+  "version": "0.1.0",
+  "description": "Metalsmith plugin for HTML file spellchecking",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://gitlab.com/blue-systems-group/code.metalsmith-spellcheck/issues"
+  },
+  "homepage": "https://gitlab.com/blue-systems-group/code.metalsmith-spellcheck",
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.com:blue-systems-group/code.metalsmith-spellcheck.git"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha --reporter spec --slow 2000"
+  },
+  "keywords": [
+    "metalsmith"
+  ],
+  "author": {
+    "name": "Geoffrey Challen",
+    "email": "challen@buffalo.edu"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "async": "^1.4.2",
+    "debug": "^2.2.0",
+    "fs": "0.0.2",
+    "nodehun": "^2.0.8",
+    "underscore": "^1.8.3",
+    "validator": "^4.0.6"
+  }
+}
