@@ -42,7 +42,7 @@ function defaultsWithDictionary() {
 }
 
 describe('metalsmith-spellcheck', function() {
-  it('should identify all misspelled words with the default parameters', function(done) {
+  it('should identify misspelled words with the default parameters', function(done) {
     var src = 'test/fixtures/errors';
     var defaults = defaultsWithDictionary();
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
@@ -51,9 +51,12 @@ describe('metalsmith-spellcheck', function() {
     metalsmith(src)
       .use(spellcheck(defaults))
       .build(function (err, files) {
-        if (err) {
-          return done(err);
+        if (!err) {
+          return done(new Error('should fail'));
         }
+        assert.pathExists(test_defaults.failFile);
+        var failures = jsonfile.readFileSync(test_defaults.failFile);
+        assert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
         done();
       });
   });
@@ -61,16 +64,19 @@ describe('metalsmith-spellcheck', function() {
     var src = 'test/fixtures/errors';
     var defaults = defaultsWithDictionary();
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
-    var exceptions = { "Geoffrey": true, "/^Challen$/": true };
+    var exceptions = { "smartphone": ['working.html'], "/^challen$/i": true };
     reset_files(test_defaults);
     jsonfile.writeFileSync(test_defaults.exceptionFile, exceptions);
 
     metalsmith(src)
       .use(spellcheck(defaults))
       .build(function (err, files) {
-        if (err) {
-          return done(err);
+        if (!err) {
+          return done(new Error('should fail'));
         }
+        assert.pathExists(test_defaults.failFile);
+        var failures = jsonfile.readFileSync(test_defaults.failFile);
+        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
         done();
       });
   });
