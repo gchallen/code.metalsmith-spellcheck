@@ -1,0 +1,8 @@
+---
+spelling_exceptions:
+- Chuchu
+- Xyz
+- Ziz
+---
+Here is some test text about Chuchu and Xyz, also known as "Ziz". And here's
+an [.spelling_exception]#supercalifragilisticexpialidociously# ignored word.

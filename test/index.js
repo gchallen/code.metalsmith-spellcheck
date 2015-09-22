@@ -1,6 +1,7 @@
 require('harmonize')(['harmony-generators']);
 
 var metalsmith = require('metalsmith'),
+    asciidoc = require('metalsmith-asciidoc'),
     fs = require('fs'),
     path = require('path'),
     _ = require('underscore'),
@@ -60,7 +61,11 @@ describe('metalsmith-spellcheck', function() {
     var src = 'test/fixtures/errors';
     var defaults = defaultsWithDictionary();
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
-    var exceptions = { "smartphone": ['working.html'], "/\\bchall\\w*\\b/i": true };
+    var exceptions = { 
+      "smartphone": ['working.html'],
+      "wrd": ['broken.html'],
+      "/\\bchall\\w*\\b/i": true
+    };
     reset_files(test_defaults);
     jsonfile.writeFileSync(test_defaults.exceptionFile, exceptions);
 
@@ -95,19 +100,17 @@ describe('metalsmith-spellcheck', function() {
         done();
       });
   });
-  it('should ignore misspelled words in metadata exceptions phrases', function(done) {
+  it('should ignore exception phrases in metadata', function(done) {
     var src = 'test/fixtures/errors';
     var defaults = defaultsWithDictionary();
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
-      .use(function (files, metalsmith, done) {
+      .use(function (files, metalsmith, innerDone) {
         var metadata = metalsmith.metadata();
-        metadata['spellcheck'] = {
-          'phrases': ["Challen: smartphone"]
-        };
-        done();
+        metadata['spelling_exceptions'] = ["Challen: smartphone"];
+        innerDone();
       })
       .use(spellcheck(defaults))
       .build(function (err, files) {
@@ -120,10 +123,10 @@ describe('metalsmith-spellcheck', function() {
         done();
       });
   });
-  it('should ignore misspelled words in config exception phrases', function(done) {
+  it('should ignore exception phrases in the config', function(done) {
     var src = 'test/fixtures/errors';
     var defaults = defaultsWithDictionary();
-    defaults.exceptionPhrases = ["Challen: smartphone"];
+    defaults.exceptions = ["Challen: smartphone"];
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
@@ -139,19 +142,17 @@ describe('metalsmith-spellcheck', function() {
         done();
       });
   });
-  it('should ignore misspelled words in metadata exception patterns', function(done) {
+  it('should ignore exception patterns in metadata', function(done) {
     var src = 'test/fixtures/errors';
     var defaults = defaultsWithDictionary();
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
-      .use(function (files, metalsmith, done) {
+      .use(function (files, metalsmith, innerDone) {
         var metadata = metalsmith.metadata();
-        metadata['spellcheck'] = {
-          'patterns': ['/challen/i', '/smartphones?/'],
-        };
-        done();
+        metadata['spelling_exceptions'] =['/challen/i', '/smartphones?/'];
+        innerDone();
       })
       .use(spellcheck(defaults))
       .build(function (err, files) {
@@ -164,15 +165,54 @@ describe('metalsmith-spellcheck', function() {
         done();
       });
   });
-  it('should ignore misspelled words in config exception patterns', function(done) {
+  it('should ignore exception patterns in the config', function(done) {
     var src = 'test/fixtures/errors';
     var defaults = defaultsWithDictionary();
-    defaults.exceptionPatterns = ['Challen', '/Smartphone/i'];
+    defaults.exceptions = ['Challen', '/Smartphone/i'];
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
       .use(spellcheck(defaults))
+      .build(function (err, files) {
+        if (!err) {
+          return done(new Error('should fail'));
+        }
+        assert.pathExists(test_defaults.failFile);
+        var failures = jsonfile.readFileSync(test_defaults.failFile);
+        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        done();
+      });
+  });
+  it('should ignore multi-word patterns', function(done) {
+    var src = 'test/fixtures/errors';
+    var defaults = defaultsWithDictionary();
+    defaults.exceptions = ['Geoffrey Challen', '/smartphones?/'];
+    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    reset_files(test_defaults);
+
+    metalsmith(src)
+      .use(spellcheck(defaults))
+      .build(function (err, files) {
+        if (!err) {
+          return done(new Error('should fail'));
+        }
+        assert.pathExists(test_defaults.failFile);
+        var failures = jsonfile.readFileSync(test_defaults.failFile);
+        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        done();
+      });
+  });
+  it('should ignore exceptions in file metadata', function(done) {
+    var src = 'test/fixtures/errors';
+    var defaults = defaultsWithDictionary();
+    defaults.exceptions = ['Geoffrey Challen', '/smartphones?/'];
+    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    reset_files(test_defaults);
+
+    metalsmith(src)
+      .use(spellcheck(defaults))
+      .use(asciidoc())
       .build(function (err, files) {
         if (!err) {
           return done(new Error('should fail'));
