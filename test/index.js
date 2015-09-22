@@ -60,7 +60,7 @@ describe('metalsmith-spellcheck', function() {
     var src = 'test/fixtures/errors';
     var defaults = defaultsWithDictionary();
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
-    var exceptions = { "smartphone": ['working.html'], "/^challen$/i": true };
+    var exceptions = { "smartphone": ['working.html'], "/\\bchall\\w*\\b/i": true };
     reset_files(test_defaults);
     jsonfile.writeFileSync(test_defaults.exceptionFile, exceptions);
 
