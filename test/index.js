@@ -8,8 +8,9 @@ var metalsmith = require('metalsmith'),
     chai = require('chai'),
     jsonfile = require('jsonfile'),
     async = require('async'),
-    spellcheck = require('..'),
     nodehun = require('nodehun'),
+    powerAssert = require('power-assert'),
+    spellcheck = require('..'),
     spellcheckDefaults = require('../lib/spellcheckDefaults.js');
 
 chai.use(require('chai-fs'));
@@ -29,13 +30,19 @@ function reset_files(test_defaults) {
 function check_files(files, defaults) {
   assert(!(defaults.failFile in files));
   assert(!(defaults.exceptionFile in files));
+  if (defaults.affFile) {
+    assert(!(defaults.affFile in files));
+  }
+  if (defaults.dicFile) {
+    assert(!(defaults.dicFile in files));
+  }
 }
 
 function defaultsWithDictionary(dict) {
   var defaults = _.clone(spellcheckDefaults.defaults);
   defaults.verbose = false;
-  defaults.affbuf = 'en_US.aff';
-  defaults.dic = 'en_US.dic';
+  defaults.affFile = 'en_US.aff';
+  defaults.dicFile = 'en_US.dic';
   defaults.dict = dict;
   return defaults;
 }
@@ -58,7 +65,7 @@ describe('metalsmith-spellcheck', function() {
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
         done();
       });
   });
@@ -82,7 +89,7 @@ describe('metalsmith-spellcheck', function() {
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
         done();
       });
   });
@@ -100,12 +107,14 @@ describe('metalsmith-spellcheck', function() {
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
+        check_files(files, defaults);
         done();
       });
   });
   it('should ignore exception phrases in metadata', function(done) {
     var defaults = defaultsWithDictionary(dict);
+    defaults.failErrors = false;
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
@@ -117,35 +126,39 @@ describe('metalsmith-spellcheck', function() {
       })
       .use(spellcheck(defaults))
       .build(function (err, files) {
-        if (!err) {
-          return done(new Error('should fail'));
+        if (err) {
+          return done(err);
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        check_files(files, defaults);
         done();
       });
   });
   it('should ignore exception phrases in the config', function(done) {
     var defaults = defaultsWithDictionary(dict);
     defaults.exceptions = ["Challen: smartphone"];
+    defaults.failErrors = false;
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
       .use(spellcheck(defaults))
       .build(function (err, files) {
-        if (!err) {
-          return done(new Error('should fail'));
+        if (err) {
+          return done(err);
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        check_files(files, defaults);
         done();
       });
   });
   it('should ignore exception patterns in metadata', function(done) {
     var defaults = defaultsWithDictionary(dict);
+    defaults.failErrors = false;
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
@@ -157,54 +170,60 @@ describe('metalsmith-spellcheck', function() {
       })
       .use(spellcheck(defaults))
       .build(function (err, files) {
-        if (!err) {
-          return done(new Error('should fail'));
+        if (err) {
+          return done(err);
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        check_files(files, defaults);
         done();
       });
   });
   it('should ignore exception patterns in the config', function(done) {
     var defaults = defaultsWithDictionary(dict);
     defaults.exceptions = ['Challen', '/Smartphone/i'];
+    defaults.failErrors = false;
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
       .use(spellcheck(defaults))
       .build(function (err, files) {
-        if (!err) {
-          return done(new Error('should fail'));
+        if (err) {
+          return done(err);
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        check_files(files, defaults);
         done();
       });
   });
   it('should ignore multi-word patterns', function(done) {
     var defaults = defaultsWithDictionary(dict);
     defaults.exceptions = ['Geoffrey Challen', '/smartphones?/'];
+    defaults.failErrors = false;
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
       .use(spellcheck(defaults))
       .build(function (err, files) {
-        if (!err) {
-          return done(new Error('should fail'));
+        if (err) {
+          return done(err);
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        check_files(files, defaults);
         done();
       });
   });
   it('should ignore exceptions in file metadata', function(done) {
     var defaults = defaultsWithDictionary(dict);
     defaults.exceptions = ['Geoffrey Challen', '/smartphones?/'];
+    defaults.failErrors = false;
     var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
@@ -212,12 +231,39 @@ describe('metalsmith-spellcheck', function() {
       .use(spellcheck(defaults))
       .use(asciidoc())
       .build(function (err, files) {
-        if (!err) {
-          return done(new Error('should fail'));
+        if (err) {
+          return done(err);
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        assert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        check_files(files, defaults);
+        done();
+      });
+  });
+  it('should ignore exceptions with path patterns', function(done) {
+    var defaults = defaultsWithDictionary(dict);
+    defaults.failErrors = false;
+    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var exceptions = { 
+      "smartphone": ['*.html'],
+      "wrd": ['broken.html'],
+      "/\\bchall\\w*\\b/i": true
+    };
+    reset_files(test_defaults);
+    jsonfile.writeFileSync(test_defaults.exceptionFile, exceptions);
+
+    metalsmith(src)
+      .use(spellcheck(defaults))
+      .use(asciidoc())
+      .build(function (err, files) {
+        if (err) {
+          return done(err);
+        }
+        assert.pathExists(test_defaults.failFile);
+        var failures = jsonfile.readFileSync(test_defaults.failFile);
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        check_files(files, defaults);
         done();
       });
   });

@@ -29,6 +29,7 @@
     "debug": "^2.2.0",
     "fs": "0.0.2",
     "jsonfile": "^2.2.2",
+    "minimatch": "^2.0.10",
     "nodehun": "^2.0.8",
     "underscore": "^1.8.3",
     "validator": "^4.0.6"
@@ -39,6 +40,7 @@
     "harmonize": "^1.4.4",
     "metalsmith": "^2.0.1",
     "metalsmith-asciidoc": "^1.1.0",
-    "mocha": "^2.3.2"
+    "mocha": "^2.3.2",
+    "power-assert": "^1.0.1"
   }
 }
