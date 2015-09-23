@@ -65,7 +65,7 @@ describe('metalsmith-spellcheck', function() {
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd", "smartphone-enabled"].sort());
         done();
       });
   });
@@ -107,7 +107,7 @@ describe('metalsmith-spellcheck', function() {
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd", "smartphone-enabled"].sort());
         check_files(files, defaults);
         done();
       });

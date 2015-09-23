@@ -27,6 +27,7 @@
     "async": "^1.4.2",
     "cheerio": "^0.19.0",
     "debug": "^2.2.0",
+    "fold-to-ascii": "^2.0.2",
     "fs": "0.0.2",
     "jsonfile": "^2.2.2",
     "minimatch": "^2.0.10",
