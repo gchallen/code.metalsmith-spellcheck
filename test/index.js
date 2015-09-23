@@ -76,7 +76,7 @@ describe('metalsmith-spellcheck', function() {
     var exceptions = { 
       "smartphone": ['working.html'],
       "wrd": ['broken.html'],
-      "/\\bchall\\w*\\b/i": true
+      "/chall\\w+/i": true
     };
     reset_files(test_defaults);
     jsonfile.writeFileSync(test_defaults.exceptionFile, exceptions);
