@@ -228,8 +228,8 @@ describe('metalsmith-spellcheck', function() {
     reset_files(test_defaults);
 
     metalsmith(src)
-      .use(spellcheck(defaults))
       .use(asciidoc())
+      .use(spellcheck(defaults))
       .build(function (err, files) {
         if (err) {
           return done(err);
@@ -254,8 +254,29 @@ describe('metalsmith-spellcheck', function() {
     jsonfile.writeFileSync(test_defaults.exceptionFile, exceptions);
 
     metalsmith(src)
-      .use(spellcheck(defaults))
       .use(asciidoc())
+      .use(spellcheck(defaults))
+      .build(function (err, files) {
+        if (err) {
+          return done(err);
+        }
+        assert.pathExists(test_defaults.failFile);
+        var failures = jsonfile.readFileSync(test_defaults.failFile);
+        powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+        check_files(files, defaults);
+        done();
+      });
+  });
+  it('should ignore apostrophes', function(done) {
+    var defaults = defaultsWithDictionary(dict);
+    defaults.failErrors = false;
+    defaults.exceptions = ["Challen", "smartphone"]
+    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    reset_files(test_defaults);
+
+    metalsmith(src)
+      .use(asciidoc())
+      .use(spellcheck(defaults))
       .build(function (err, files) {
         if (err) {
           return done(err);
