@@ -163,11 +163,25 @@ Alternatively, a reference to an initialized nodehun object, in case you want
 to use multiple dictionaries or do some dictionary customization prior to
 using the plugin.
 
+#### `cacheChecks` (optional)
+
+(default: *true*)
+
+If set metalsmith-spellcheck will only rerun spelling checks when it thinks
+that things have changed: either because you changed the dictionaries,
+changed the exceptions, or changed its inputs.
+
 #### `verbose` (optional)
 
 (default: *false*)
 
 If set a message will be printed when misspelled words are detected.
+
+#### `veryVerbose` (optional)
+
+(default: *false*)
+
+If set messages about cache checking will be displayed.
 
 #### `failErrors` (optional)
 
@@ -179,12 +193,21 @@ If set the metalsmith build process will halt if words are misspelled.
 
 Array of spelling exceptions as described above.
 
+#### `checkFile` (optional)
+
+(default: *`spelling_checked.json`*)
+
+Path relative to the metalsmith source directory to a JSON file containing
+information required to cache spelling checks. This will be removed from the
+build directory.
+
 #### `exceptionFile` (optional)
 
 (default: *`spelling_exceptions.json`*)
 
-Path relative to the metalsmith source directory to a JSON
-file containing spelling exceptions. See description above.
+Path relative to the metalsmith source directory to a JSON file containing
+spelling exceptions. See description above. This will be removed from the
+build directory.
 
 #### `failFile` (optional)
 
