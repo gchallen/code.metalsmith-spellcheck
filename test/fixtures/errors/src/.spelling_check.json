@@ -1,0 +1,12 @@
+{
+    "files": {
+        "en_US.aff": "948412697f6fe862d4bc17517011f46e",
+        "en_US.dic": "4515fbb1b055337dfd1b95a92c1b7e4f",
+        "working.html": "a811a984e2af4ecd3544b879d70641d0",
+        "second.html": "f487d84123f7e8b0ab3330a2185788d2"
+    },
+    "exceptions": {
+        "working.html": "0ae54dd0e96fbbed0c92b97587ca52c66afe3f3c",
+        "second.html": "065bf6f6b2d2b9883989bd6d8f6d4a792663475e"
+    }
+}

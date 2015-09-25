@@ -10,8 +10,7 @@ var metalsmith = require('metalsmith'),
     async = require('async'),
     nodehun = require('nodehun'),
     powerAssert = require('power-assert'),
-    spellcheck = require('..'),
-    spellcheckDefaults = require('../lib/spellcheckDefaults.js');
+    spellcheck = require('..');
 
 chai.use(require('chai-fs'));
 var assert = chai.assert;
@@ -23,8 +22,12 @@ function reset_files(test_defaults) {
   try {
     fs.unlinkSync(test_defaults.exceptionFile);
   } catch (err) {};
+  try {
+    fs.unlinkSync(test_defaults.checkFile);
+  } catch (err) {};
   assert.notPathExists(test_defaults.exceptionFile);
   assert.notPathExists(test_defaults.failFile);
+  assert.notPathExists(test_defaults.checkFile);
 }
 
 function check_files(files, defaults) {
@@ -39,7 +42,7 @@ function check_files(files, defaults) {
 }
 
 function defaultsWithDictionary(dict) {
-  var defaults = _.clone(spellcheckDefaults.defaults);
+  var defaults = _.clone(spellcheck.defaults);
   defaults.verbose = false;
   defaults.affFile = 'en_US.aff';
   defaults.dicFile = 'en_US.dic';
@@ -54,7 +57,7 @@ var dict = new nodehun(fs.readFileSync(path.join(src, 'src', 'en_US.aff')),
 describe('metalsmith-spellcheck', function() {
   it('should identify misspelled words with the default parameters', function(done) {
     var defaults = defaultsWithDictionary(dict);
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
@@ -72,7 +75,7 @@ describe('metalsmith-spellcheck', function() {
   it('should ignore misspelled words in the exception file', function(done) {
     var defaults = defaultsWithDictionary();
     var defaults = defaultsWithDictionary(dict);
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     var exceptions = { 
       "smartphone": ['working.html'],
       "wrd": ['broken.html'],
@@ -96,7 +99,7 @@ describe('metalsmith-spellcheck', function() {
   it('should not fail when told not to', function(done) {
     var defaults = defaultsWithDictionary(dict);
     defaults.failErrors = false;
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
@@ -115,7 +118,7 @@ describe('metalsmith-spellcheck', function() {
   it('should ignore exception phrases in metadata', function(done) {
     var defaults = defaultsWithDictionary(dict);
     defaults.failErrors = false;
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
@@ -140,7 +143,7 @@ describe('metalsmith-spellcheck', function() {
     var defaults = defaultsWithDictionary(dict);
     defaults.exceptions = ["Challen: smartphone"];
     defaults.failErrors = false;
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
@@ -159,7 +162,7 @@ describe('metalsmith-spellcheck', function() {
   it('should ignore exception patterns in metadata', function(done) {
     var defaults = defaultsWithDictionary(dict);
     defaults.failErrors = false;
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
@@ -184,7 +187,7 @@ describe('metalsmith-spellcheck', function() {
     var defaults = defaultsWithDictionary(dict);
     defaults.exceptions = ['Challen', '/Smartphone/i'];
     defaults.failErrors = false;
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
@@ -204,7 +207,7 @@ describe('metalsmith-spellcheck', function() {
     var defaults = defaultsWithDictionary(dict);
     defaults.exceptions = ['Geoffrey Challen', '/smartphones?/'];
     defaults.failErrors = false;
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
@@ -224,7 +227,7 @@ describe('metalsmith-spellcheck', function() {
     var defaults = defaultsWithDictionary(dict);
     defaults.exceptions = ['Geoffrey Challen', '/smartphones?/'];
     defaults.failErrors = false;
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
@@ -244,7 +247,7 @@ describe('metalsmith-spellcheck', function() {
   it('should ignore exceptions with path patterns', function(done) {
     var defaults = defaultsWithDictionary(dict);
     defaults.failErrors = false;
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     var exceptions = { 
       "smartphone": ['*.html'],
       "wrd": ['broken.html'],
@@ -271,7 +274,7 @@ describe('metalsmith-spellcheck', function() {
     var defaults = defaultsWithDictionary(dict);
     defaults.failErrors = false;
     defaults.exceptions = ["Challen", "smartphone"]
-    var test_defaults = spellcheckDefaults.processConfig(defaults, path.join(src, 'src'));
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
 
     metalsmith(src)
