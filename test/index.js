@@ -291,4 +291,58 @@ describe('metalsmith-spellcheck', function() {
         done();
       });
   });
+  it('should cache checks', function(done) {
+    var defaults = defaultsWithDictionary(dict);
+    defaults.failErrors = false;
+    defaults.exceptions = ["Challen", "smartphone"]
+    var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
+    reset_files(test_defaults);
+    
+    var failFileHash, checkFileHash;
+
+    async.series([
+      function (callback) {
+        metalsmith(src)
+          .use(asciidoc())
+          .use(spellcheck(defaults))
+          .build(function (err, files) {
+            if (err) {
+              return done(err);
+            }
+            assert.pathExists(test_defaults.failFile);
+            var failures = jsonfile.readFileSync(test_defaults.failFile);
+            powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+
+            assert.pathExists(test_defaults.checkFile);
+            var checked = jsonfile.readFileSync(test_defaults.checkFile);
+            powerAssert.deepEqual(_.keys(checked.files).sort(), ["working.html", "second.html", "en_US.dic", "en_US.aff"].sort());
+            
+            check_files(files, defaults);
+            callback();
+          });
+      },
+      function (callback) {
+        metalsmith(src)
+          .use(asciidoc())
+          .use(spellcheck(defaults))
+          .build(function (err, files) {
+            if (err) {
+              return done(err);
+            }
+            assert.pathExists(test_defaults.failFile);
+            var failures = jsonfile.readFileSync(test_defaults.failFile);
+            powerAssert.deepEqual(_.keys(failures).sort(), ["wrd"].sort());
+
+            assert.pathExists(test_defaults.checkFile);
+            var checked = jsonfile.readFileSync(test_defaults.checkFile);
+            powerAssert.deepEqual(_.keys(checked.files).sort(), ["working.html", "second.html", "en_US.dic", "en_US.aff"].sort());
+            
+            check_files(files, defaults);
+            callback();
+          });
+      }],
+      function () {
+        done();
+      });
+  });
 });
