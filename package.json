@@ -1,15 +1,15 @@
 {
   "name": "metalsmith-spellcheck",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Metalsmith plugin for HTML file spellchecking",
   "readmeFilename": "README.md",
   "bugs": {
-    "url": "https://gitlab.com/blue-systems-group/code.metalsmith-spellcheck/issues"
+    "url": "https://github.com/gchallen/code.metalsmith-spellcheck/issues"
   },
-  "homepage": "https://gitlab.com/blue-systems-group/code.metalsmith-spellcheck",
+  "homepage": "https://github.com/gchallen/code.metalsmith-spellcheck",
   "repository": {
     "type": "git",
-    "url": "git@gitlab.com:blue-systems-group/code.metalsmith-spellcheck.git"
+    "url": "git@github.com:gchallen/code.metalsmith-spellcheck.git"
   },
   "main": "lib/index.js",
   "scripts": {
