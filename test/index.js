@@ -1,5 +1,3 @@
-require('harmonize')(['harmony-generators']);
-
 var metalsmith = require('metalsmith'),
     asciidoc = require('metalsmith-asciidoc'),
     fs = require('fs'),
