@@ -66,7 +66,7 @@ describe('metalsmith-spellcheck', function() {
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "Smartphone", "wrd"].sort());
         done();
       });
   });
@@ -108,7 +108,7 @@ describe('metalsmith-spellcheck', function() {
         }
         assert.pathExists(test_defaults.failFile);
         var failures = jsonfile.readFileSync(test_defaults.failFile);
-        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "smartphone", "wrd"].sort());
+        powerAssert.deepEqual(_.keys(failures).sort(), ["Challen", "Smartphone", "smartphone", "wrd"].sort());
         check_files(files, defaults);
         done();
       });
@@ -166,7 +166,7 @@ describe('metalsmith-spellcheck', function() {
     metalsmith(src)
       .use(function (files, metalsmith, innerDone) {
         var metadata = metalsmith.metadata();
-        metadata['spelling_exceptions'] =['/challen/i', '/smartphones?/'];
+        metadata['spelling_exceptions'] =['/challen/i', '/smartphones?/i'];
         innerDone();
       })
       .use(spellcheck(defaults))
@@ -203,7 +203,7 @@ describe('metalsmith-spellcheck', function() {
   });
   it('should ignore multi-word patterns', function(done) {
     var defaults = defaultsWithDictionary(dict);
-    defaults.exceptions = ['Geoffrey Challen', '/smartphones?/'];
+    defaults.exceptions = ['Geoffrey Challen', '/smartphones?/i'];
     defaults.failErrors = false;
     var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
@@ -223,7 +223,7 @@ describe('metalsmith-spellcheck', function() {
   });
   it('should ignore exceptions in file metadata', function(done) {
     var defaults = defaultsWithDictionary(dict);
-    defaults.exceptions = ['Geoffrey Challen', '/smartphones?/'];
+    defaults.exceptions = ['Geoffrey Challen', '/smartphones?/i'];
     defaults.failErrors = false;
     var test_defaults = spellcheck.processConfig(defaults, path.join(src, 'src'));
     reset_files(test_defaults);
