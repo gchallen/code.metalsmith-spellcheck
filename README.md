@@ -62,6 +62,11 @@ exceptions can be either patterns&mdash;if they start and end with
 surrounded by word boundary characters, and phrases split into lists of
 words. Here are some examples:
 
+* "test" becomes "/\\b(T|t)est\\b/", meaning that simple exceptions that
+	start with lowercase letters automatically expand to match upper and lower
+	case...
+* ...but "Test" becomes "/\\bTest\\b/", meaning that simple uppercase
+	exceptions do not expand in the same way.
 * "/Challen/i" becomes "/\\bChallen\\b/i"
 * "/Geoffrey Challen/" becomes "/\\bGeoffrey Challen\\b/"
 * "Geoffrey Challen" becomes ["/\\bGeoffrey\\b/", "/\\bChallen\\b/"]
