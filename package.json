@@ -13,7 +13,7 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --reporter spec --slow 2000"
+    "test": "node_modules/.bin/mocha --reporter spec --slow 4000 --timeout 10000"
   },
   "keywords": [
     "metalsmith"
