@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-spellcheck",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Metalsmith plugin for HTML file spellchecking",
   "readmeFilename": "README.md",
   "bugs": {
@@ -13,7 +13,7 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --reporter spec --slow 2000"
+    "test": "node_modules/.bin/mocha --reporter spec --slow 4000 --timeout 10000"
   },
   "keywords": [
     "metalsmith"
@@ -24,25 +24,25 @@
   },
   "license": "MIT",
   "dependencies": {
-    "async": "^2.0.1",
-    "cheerio": "^0.20.0",
-    "debug": "^2.2.0",
+    "async": "^2.1.4",
+    "cheerio": "^0.22.0",
+    "debug": "^2.6.0",
     "fs": "0.0.2",
-    "jsonfile": "^2.2.2",
-    "md5": "^2.0.0",
-    "minimatch": "^3.0.2",
-    "nodehun": "^2.0.8",
-    "object-hash": "^1.1.3",
+    "jsonfile": "^2.4.0",
+    "md5": "^2.2.1",
+    "minimatch": "^3.0.3",
+    "nodehun": "^2.0.11",
+    "object-hash": "^1.1.5",
     "underscore": "^1.8.3",
-    "validator": "^5.5.0"
+    "validator": "^6.2.1"
   },
   "devDependencies": {
-    "asciidoctor.js": "^1.5.5-1",
+    "asciidoctor.js": "=1.5.3",
     "chai": "^3.5.0",
-    "chai-fs": "^0.1.0",
-    "metalsmith": "^2.0.1",
+    "chai-fs": "^1.0.0",
+    "metalsmith": "^2.3.0",
     "metalsmith-asciidoc": "^1.1.0",
-    "mocha": "^2.3.2",
-    "power-assert": "^1.0.1"
+    "mocha": "^3.2.0",
+    "power-assert": "^1.4.2"
   }
 }
