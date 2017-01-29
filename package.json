@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-spellcheck",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Metalsmith plugin for HTML file spellchecking",
   "readmeFilename": "README.md",
   "bugs": {
