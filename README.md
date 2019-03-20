@@ -15,12 +15,42 @@ npm install --save metalsmith-spellcheck
 
 ##  Usage
 
-If using the CLI for Metalsmith, metalsmith-spellcheck can be used like any other plugin by including it in `metalsmith.json`:
+If using the CLI for Metalsmith, metalsmith-spellcheck can be used like any other plugin by including it in `metalsmith.json`, this will use the `en_US.aff` and `en_US.dic` files from your `src` directory:
+
 
 ```json
 {
   "plugins": {
     "metalsmith-spellcheck"
+  }
+}
+```
+
+To use another dictionary, specify the path in your source directory:
+
+
+```json
+{
+  "plugins": {
+    "metalsmith-spellcheck" : {
+      "dicFile": "en_CA.dic",
+      "dicFile": "en_CA.aff"
+    }
+  }
+}
+```
+
+You can also install a dictionary in your node_modules file and reference it with a configuration string:
+
+```
+npm install --save dictionary-en-us
+```
+
+
+```json
+{
+  "plugins": {
+    "metalsmith-spellcheck": "dictionary-en-us"
   }
 }
 ```
