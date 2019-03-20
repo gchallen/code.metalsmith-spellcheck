@@ -44,7 +44,7 @@
     "chai-fs": "^1.0.0",
     "metalsmith": "^2.3.0",
     "metalsmith-asciidoc": "https://github.com/gchallen/metalsmith-asciidoc.git",
-    "mocha": "^3.5.0",
+    "mocha": "^6.0.2",
     "power-assert": "^1.4.4"
   }
 }
